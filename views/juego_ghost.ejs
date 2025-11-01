@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ghost of Tsushima — TiendaGamer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .media-container{display:flex;flex-direction:column;align-items:center;gap:20px;margin:30px auto;max-width:900px;text-align:center}
+    video{width:100%;height:auto;border-radius:14px;box-shadow:0 0 20px rgba(0,0,0,0.5);outline:none}
+    .gallery{position:relative;max-width:700px;margin:auto}
+    .gallery img{width:100%;height:auto;border-radius:12px;display:block}
+    .gallery button{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:0;color:white;padding:10px;border-radius:50%;cursor:pointer}
+    .gallery button:hover{background:rgba(0,0,0,0.8)}
+    .prev{left:10px}
+    .next{right:10px}
+    .info{max-width:800px;margin:auto;text-align:left;line-height:1.6}
+    .requirements{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+    .req-box{background:rgba(255,255,255,0.03);padding:12px;border-radius:10px}
+    a.btn-back{display:inline-block;margin-top:20px;padding:10px 16px;border-radius:10px;background:var(--accent-blue);color:white;text-decoration:none;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="mark">G</div>
+        <div>
+          <h1>TiendaGamer</h1>
+          <p>Juegos — Ofertas — Comunidad</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="media-container">
+      <h2>Ghost of Tsushima — Director's Cut</h2>
+
+      <!-- 🎥 Video local -->
+      <video controls poster="img/ghost1.jpg">
+        <source src="media/ghost_trailer.mp4" type="video/mp4">
+        Tu navegador no soporta la reproducción de video.
+      </video>
+
+      <!-- 🖼️ Galería -->
+      <div class="gallery">
+        <img id="galeria" src="img/ghost1.jpg" alt="Ghost screenshot 1">
+        <button class="prev" onclick="cambiar(-1)">❮</button>
+        <button class="next" onclick="cambiar(1)">❯</button>
+      </div>
+
+      <!-- ℹ️ Información -->
+      <div class="info">
+        <p>Conviértete en Jin Sakai, un samurái en busca de libertad mientras lucha contra la invasión mongola en la isla de Tsushima. Descubre una épica historia de honor y sacrificio con un impresionante mundo abierto japonés.</p>
+
+        <div class="requirements">
+          <div class="req-box">
+            <h4>Requisitos mínimos</h4>
+            <ul>
+              <li>SO: Windows 10 64-bit</li>
+              <li>CPU: Intel i5-8400</li>
+              <li>RAM: 8 GB</li>
+              <li>GPU: GTX 1060 o equivalente</li>
+              <li>Almacenamiento: 60 GB</li>
+            </ul>
+          </div>
+          <div class="req-box">
+            <h4>Requisitos recomendados</h4>
+            <ul>
+              <li>SO: Windows 11 64-bit</li>
+              <li>CPU: Ryzen 7 3700X</li>
+              <li>RAM: 16 GB</li>
+              <li>GPU: RTX 3060 o superior</li>
+              <li>Almacenamiento: SSD 60 GB</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <a href="index.html" class="btn-back">← Volver al inicio</a>
+    </main>
+
+    <footer>
+      © 2025 TiendaGamer — Página multimedia ficticia.
+    </footer>
+  </div>
+
+  <script>
+    const imagenes = ["img/ghost1.jpg","img/ghost2.jpeg","img/ghost3.jpg"];
+    let indice = 0;
+    function cambiar(d){
+      indice = (indice + d + imagenes.length) % imagenes.length;
+      document.getElementById("galeria").src = imagenes[indice];
+    }
+  </script>
+</body>
+</html>
