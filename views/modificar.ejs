@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Juego — TiendaGamer</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="mark">G</div>
+                <div>
+                    <h1>TiendaGamer</h1>
+                    <p>Modificar Juego</p>
+                </div>
+            </div>
+            <nav>
+                <a href="/">Inicio</a>
+                <a href="/catalogo">Catálogo</a>
+                <a href="/agregar">Agregar</a>
+                <a href="/modificar" class="active">Modificar</a>
+            </nav>
+        </header>
+
+    <main class="form-container">
+        <% if (typeof errors !== 'undefined' && errors && errors.length) { %>
+            <div class="errors" style="color:#ffb4b4;margin-bottom:12px;">
+                <ul>
+                    <% errors.forEach(function(err){ %>
+                        <li><%= err %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } %>
+
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div class="success" style="color:var(--accent-green);margin-bottom:12px;"><%= success %></div>
+        <% } %>
+
+        <!-- Formulario de búsqueda -->
+        <% if (!game || !game.id) { %>
+            <form class="formulario" method="get" action="/modificar" style="margin-bottom:20px;">
+                <label for="search">Buscar juego por nombre:</label>
+                <div style="display:flex;gap:8px;">
+                    <input id="search" name="q" type="text" placeholder="Ejemplo: God of War" required style="flex:1;">
+                    <button type="submit" class="btn">Buscar</button>
+                </div>
+            </form>
+        <% } %>
+
+        <!-- Formulario de modificación (se muestra si hay un juego) -->
+        <% if (game && game.id) { %>
+            <form class="formulario" method="post" action="/modificar/<%= game.id %>">
+                <input type="hidden" name="id" value="<%= game.id %>">
+
+                <label for="name">Nombre del juego:</label>
+                <input id="name" name="name" type="text" value="<%= game.name %>" required>
+
+                <label for="description">Descripción:</label>
+                <textarea id="description" name="description" required><%= game.description %></textarea>
+
+                <label for="price">Precio (USD):</label>
+                <input id="price" name="price" type="number" step="0.01" value="<%= game.price %>" required>
+
+                <label for="platform">Plataforma o categoría:</label>
+                <input id="platform" name="platform" type="text" value="<%= game.platform %>" required>
+
+                <label for="imageUrl">Link de imagen:</label>
+                <input id="imageUrl" name="imageUrl" type="url" value="<%= game.imageUrl %>" required>
+
+                <button type="submit" class="btn">Actualizar Juego</button>
+            </form>
+        <% } %>
+
+        <!-- Si no hay juego pero hubo búsqueda, mostrar mensaje -->
+        <% if (typeof searched !== 'undefined' && searched && (!game || !game.id)) { %>
+            <p style="color:var(--muted);text-align:center;">No se encontró el juego. Intenta con otro nombre.</p>
+        <% } %>
+    </main>
+
+        <footer>
+            <p>&copy; 2025 TiendaGamer</p>
+            <p>Contacto: <a href="mailto:lbhd17@hotmail.com">lbhd17@hotmail.com</a></p>
+        </footer>
+    </div>
+</body>
+</html>

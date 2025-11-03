@@ -108,6 +108,118 @@
     .add{background:var(--accent-blue);color:#fff}
     .buy{background:var(--accent-red);color:#fff}
 
+    /* Formularios */
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: var(--card-radius);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .formulario {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .formulario label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent-blue);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .formulario input,
+    .formulario textarea {
+      width: 100%;
+      padding: 12px;
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .formulario textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .formulario input:focus,
+    .formulario textarea:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(58,134,255,0.1);
+    }
+
+    .formulario button {
+      background: var(--accent-blue);
+      color: #fff;
+      padding: 14px;
+      border: 0;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .formulario button:hover {
+      background: #2b77ff;
+    }
+
+    .formulario button:active {
+      transform: translateY(1px);
+    }
+
+    .errors {
+      background: rgba(230,57,70,0.1);
+      border-left: 3px solid var(--accent-red);
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .errors ul {
+      margin: 0;
+      padding-left: 16px;
+      color: #ffb4b4;
+    }
+
+    .success {
+      background: rgba(6,214,160,0.1);
+      border-left: 3px solid var(--accent-green);
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      color: var(--accent-green);
+    }
+
+    /* Search form in modificar.ejs */
+    .search-form {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+      border-radius: 10px;
+    }
+
+    .search-form .input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-form input {
+      flex: 1;
+    }
+
+    .search-form button {
+      white-space: nowrap;
+    }
+
     /* Footer */
     footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
 
