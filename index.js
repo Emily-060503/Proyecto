@@ -2,19 +2,20 @@
 const express = require('express');
 const path = require('path');
 const { initializeApp } = require('firebase/app');
-const { getFirestore, collection, getDocs, query, where } = require('firebase/firestore');
+const { getFirestore, collection, getDocs, query, where, addDoc } = require('firebase/firestore');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Configuración de Firebase (reemplaza con tus credenciales)
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_AUTH_DOMAIN",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_STORAGE_BUCKET",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyAgja9DNXFZ1GFqXQW6gfdmQc332swF-7g",
+  authDomain: "proyecto-ef176.firebaseapp.com",
+  projectId: "proyecto-ef176",
+  storageBucket: "proyecto-ef176.firebasestorage.app",
+  messagingSenderId: "953870791085",
+  appId: "1:953870791085:web:4a414c3b57eacf98b77124",
+  measurementId: "G-LNJHBLN7ZK"
 };
 
 // Inicializar Firebase
@@ -59,12 +60,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Rutas principales (mapeamos los enlaces .html usados en las vistas a rutas dinámicas)
 // Ruta principal - muestra el login
-app.get('/', (req, res) => res.render('inicio'));
+app.get('/', (req, res) => res.render('inicio', { error: null }));
 
 // Ruta POST para procesar el login
 app.post('/login', async (req, res) => {
   try {
     const { usuario, contrasena } = req.body;
+    
+    console.log('=== INTENTO DE LOGIN ===');
+    console.log('Usuario recibido:', usuario);
+    console.log('Contraseña recibida:', contrasena);
 
     if (!usuario || !contrasena) {
       return res.status(400).render('inicio', { 
@@ -73,9 +78,25 @@ app.post('/login', async (req, res) => {
     }
 
     // Buscar usuario en la colección 'usuarios' de Firebase
+    console.log('Buscando en Firebase...');
     const usuariosRef = collection(db, 'usuarios');
-    const q = query(usuariosRef, where('usuario', '==', usuario), where('contrasena', '==', contrasena));
+    
+    // Primero obtenemos TODOS los usuarios para ver qué hay en la base de datos
+    const allUsers = await getDocs(usuariosRef);
+    console.log('Total de usuarios en Firebase:', allUsers.size);
+    
+    allUsers.forEach((doc) => {
+      console.log('Usuario encontrado:', {
+        id: doc.id,
+        data: doc.data()
+      });
+    });
+    
+    // Ahora hacemos la búsqueda específica (usando 'contraseña' con ñ)
+    const q = query(usuariosRef, where('usuario', '==', usuario), where('contraseña', '==', contrasena));
     const querySnapshot = await getDocs(q);
+    
+    console.log('Resultados de la búsqueda:', querySnapshot.size);
 
     if (querySnapshot.empty) {
       return res.status(401).render('inicio', { 
@@ -84,18 +105,93 @@ app.post('/login', async (req, res) => {
     }
 
     // Login exitoso - redirigir a index
+    console.log('¡Login exitoso!');
     res.redirect('/home');
 
   } catch (error) {
     console.error('Error al verificar usuario:', error);
+    console.error('Stack completo:', error.stack);
     res.status(500).render('inicio', { 
-      error: 'Error al procesar el login. Intente nuevamente.' 
+      error: 'Error al procesar el login: ' + error.message 
     });
   }
 });
 
 // Ruta para home (después del login exitoso)
 app.get(['/home', '/index.html'], (req, res) => res.render('index'));
+
+// Ruta GET para mostrar el formulario de registro
+app.get(['/registrar', '/registrar.html', '/registro'], (req, res) => {
+  res.render('registrar', { error: null, success: null, redirect: false });
+});
+
+// Ruta POST para procesar el registro
+app.post('/registro', async (req, res) => {
+  try {
+    const { usuario, contrasena } = req.body;
+    
+    console.log('=== INTENTO DE REGISTRO ===');
+    console.log('Usuario:', usuario);
+
+    // Validar que los campos no estén vacíos
+    if (!usuario || !contrasena) {
+      return res.status(400).render('registrar', { 
+        error: 'Por favor complete todos los campos',
+        success: null
+      });
+    }
+
+    // Validar longitud mínima
+    if (usuario.trim().length < 3) {
+      return res.status(400).render('registrar', { 
+        error: 'El usuario debe tener al menos 3 caracteres',
+        success: null
+      });
+    }
+
+    if (contrasena.length < 4) {
+      return res.status(400).render('registrar', { 
+        error: 'La contraseña debe tener al menos 4 caracteres',
+        success: null
+      });
+    }
+
+    // Verificar si el usuario ya existe
+    const usuariosRef = collection(db, 'usuarios');
+    const q = query(usuariosRef, where('usuario', '==', usuario.trim()));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      return res.status(400).render('registrar', { 
+        error: 'El usuario ya existe. Por favor elige otro nombre.',
+        success: null
+      });
+    }
+
+    // Crear el nuevo usuario en Firebase
+    await addDoc(usuariosRef, {
+      usuario: usuario.trim(),
+      contraseña: contrasena
+    });
+
+    console.log('¡Usuario registrado exitosamente!');
+
+    // Mostrar mensaje de éxito y redirigir
+    return res.render('registrar', { 
+      error: null,
+      success: '¡Usuario registrado exitosamente! Redirigiendo al inicio...',
+      redirect: true
+    });
+
+  } catch (error) {
+    console.error('Error al registrar usuario:', error);
+    console.error('Stack completo:', error.stack);
+    res.status(500).render('registrar', { 
+      error: 'Error al registrar el usuario: ' + error.message,
+      success: null
+    });
+  }
+});
 
 app.get(['/catalogo', '/catalogo.html'], (req, res) => res.render('catalogo'));
 

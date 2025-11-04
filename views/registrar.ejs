@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Iniciar sesión — TiendaGamer</title>
+  <% if (typeof redirect !== 'undefined' && redirect) { %>
+    <meta http-equiv="refresh" content="2;url=/" />
+  <% } %>
+  <title>Registro — TiendaGamer</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -55,7 +58,7 @@
     }
 
     form input:focus {
-      outline: 1px solid var(--accent-blue);
+      outline: 1px solid var(--accent-green);
       background: rgba(255,255,255,0.08);
     }
 
@@ -66,8 +69,8 @@
       border: 0;
       font-weight: 600;
       cursor: pointer;
-      background: var(--accent-red);
-      color: #fff;
+      background: var(--accent-green);
+      color: #000;
       font-family: 'Montserrat', sans-serif;
       transition: 0.25s;
     }
@@ -75,6 +78,7 @@
     .btn-primary:hover {
       transform: scale(1.02);
       background: var(--accent-blue);
+      color: #fff;
     }
 
     .auth-container p {
@@ -84,7 +88,7 @@
     }
 
     .auth-container a {
-      color: var(--accent-green);
+      color: var(--accent-blue);
       text-decoration: none;
     }
 
@@ -100,14 +104,14 @@
         <div class="mark">G</div>
         <div>
           <h1>TiendaGamer</h1>
-          <p>Inicio sesión</p>
+          <p>Registro de usuario</p>
         </div>
       </div>
     </header>
 
     <main>
       <div class="auth-container">
-        <h2>Iniciar sesión</h2>
+        <h2>Crear cuenta</h2>
         
         <% if (typeof error !== 'undefined' && error) { %>
           <div style="background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.3); color: #ff6b6b; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px;">
@@ -115,19 +119,25 @@
           </div>
         <% } %>
 
-        <form method="POST" action="/login">
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div style="background: rgba(0,255,0,0.1); border: 1px solid rgba(0,255,0,0.3); color: #51cf66; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px;">
+            <%= success %>
+          </div>
+        <% } %>
+
+        <form method="POST" action="/registro">
           <label for="usuario">Usuario</label>
-          <input type="text" id="usuario" name="usuario" required placeholder="Tu usuario...">
+          <input type="text" id="usuario" name="usuario" required placeholder="Elige un usuario..." minlength="3">
 
           <label for="contrasena">Contraseña</label>
-          <input type="password" id="contrasena" name="contrasena" required placeholder="Tu contraseña...">
+          <input type="password" id="contrasena" name="contrasena" required placeholder="Mínimo 4 caracteres" minlength="4">
 
-          <button type="submit" class="btn-primary">Entrar</button>
+          <button type="submit" class="btn-primary">Registrar</button>
         </form>
-        <p>¿No tienes cuenta? <a href="/registrar">Regístrate aquí</a></p>
+        <p>¿Ya tienes cuenta? <a href="/">Inicia sesión</a></p>
       </div>
     </main>
-         <footer>
+        <footer>
             <p>&copy; 2025 TiendaGamer</p>
             <p>Contacto: <a href="mailto:lbhd17@hotmail.com">lbhd17@hotmail.com</a></p>
         </footer>
