@@ -19,12 +19,20 @@ const firebaseConfig = {
 };
 
 // Inicializar Firebase
+console.log('Inicializando Firebase...');
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
+console.log('Firebase inicializado correctamente');
 
 // Parse URL-encoded bodies (form submissions)
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// Middleware para logging de peticiones (útil para debug en producción)
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 // Almacenamiento en memoria (temporal)
 const juegos = [];
@@ -57,10 +65,31 @@ app.use('/media', express.static(path.join(__dirname, 'media')));
 // Servir archivos estáticos (CSS, JS, imágenes públicas).
 // Se expone la carpeta `public/` para assets como styles.css
 app.use(express.static(path.join(__dirname, 'public')));
+// También servir la carpeta views como estática para acceder a styles.css
+app.use(express.static(path.join(__dirname, 'views')));
+
+// Ruta de diagnóstico (para verificar que el servidor está funcionando)
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV || 'development',
+    views: app.get('views'),
+    firebase: firebaseConfig.projectId
+  });
+});
 
 // Rutas principales (mapeamos los enlaces .html usados en las vistas a rutas dinámicas)
 // Ruta principal - muestra el login
-app.get('/', (req, res) => res.render('inicio', { error: null }));
+app.get('/', (req, res) => {
+  try {
+    console.log('Renderizando página de inicio...');
+    res.render('inicio', { error: null });
+  } catch (error) {
+    console.error('Error al renderizar inicio:', error);
+    res.status(500).send('Error al cargar la página: ' + error.message);
+  }
+});
 
 // Ruta POST para procesar el login
 app.post('/login', async (req, res) => {
