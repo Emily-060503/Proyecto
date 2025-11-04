@@ -30,7 +30,19 @@ app.use(express.json());
 
 // Middleware para logging de peticiones (útil para debug en producción)
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`${req.method} ${req.url} - IP: ${req.ip}`);
+  next();
+});
+
+// Middleware para logging de archivos estáticos no encontrados
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  res.send = function(data) {
+    if (res.statusCode === 404) {
+      console.log(`❌ 404 Not Found: ${req.url}`);
+    }
+    originalSend.call(this, data);
+  };
   next();
 });
 
@@ -59,14 +71,25 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Static assets: imágenes y media
-app.use('/img', express.static(path.join(__dirname, 'img')));
-app.use('/media', express.static(path.join(__dirname, 'media')));
+const imgPath = path.join(__dirname, 'img');
+const mediaPath = path.join(__dirname, 'media');
+const publicPath = path.join(__dirname, 'public');
+const viewsPath = path.join(__dirname, 'views');
+
+console.log('Configurando rutas estáticas:');
+console.log('- img:', imgPath);
+console.log('- media:', mediaPath);
+console.log('- public:', publicPath);
+console.log('- views:', viewsPath);
+
+app.use('/img', express.static(imgPath));
+app.use('/media', express.static(mediaPath));
 
 // Servir archivos estáticos (CSS, JS, imágenes públicas).
 // Se expone la carpeta `public/` para assets como styles.css
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(publicPath));
 // También servir la carpeta views como estática para acceder a styles.css
-app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(viewsPath));
 
 // Ruta de diagnóstico (para verificar que el servidor está funcionando)
 app.get('/health', (req, res) => {
@@ -87,6 +110,17 @@ app.get('/', (req, res) => {
     res.render('inicio', { error: null });
   } catch (error) {
     console.error('Error al renderizar inicio:', error);
+    res.status(500).send('Error al cargar la página: ' + error.message);
+  }
+});
+
+// Alias para compatibilidad con enlaces tipo /inicio y /inicio.html
+app.get(['/inicio', '/inicio.html'], (req, res) => {
+  try {
+    console.log('Renderizando alias de inicio (/inicio*.html)...');
+    res.render('inicio', { error: null });
+  } catch (error) {
+    console.error('Error al renderizar alias de inicio:', error);
     res.status(500).send('Error al cargar la página: ' + error.message);
   }
 });
