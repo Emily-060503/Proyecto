@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iniciar sesión — TiendaGamer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .auth-container {
+      width: 100%;
+      max-width: 400px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--card-radius);
+      padding: 32px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+      text-align: center;
+      margin: auto;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-container h2 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--accent-blue);
+      margin-bottom: 24px;
+      font-size: 26px;
+    }
+
+    form label {
+      display: block;
+      text-align: left;
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    form input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      background: var(--glass);
+      color: #fff;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    form input:focus {
+      outline: 1px solid var(--accent-blue);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 0;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--accent-red);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      transition: 0.25s;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.02);
+      background: var(--accent-blue);
+    }
+
+    .auth-container p {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .auth-container a {
+      color: var(--accent-green);
+      text-decoration: none;
+    }
+
+    .auth-container a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="mark">G</div>
+        <div>
+          <h1>TiendaGamer</h1>
+          <p>Inicio sesión</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="auth-container">
+        <h2>Iniciar sesión</h2>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div style="background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.3); color: #ff6b6b; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px;">
+            <%= error %>
+          </div>
+        <% } %>
+
+        <form method="POST" action="/login">
+          <label for="usuario">Usuario</label>
+          <input type="text" id="usuario" name="usuario" required placeholder="Tu usuario...">
+
+          <label for="contrasena">Contraseña</label>
+          <input type="password" id="contrasena" name="contrasena" required placeholder="Tu contraseña...">
+
+          <button type="submit" class="btn-primary">Entrar</button>
+        </form>
+        <p>¿No tienes cuenta? <a href="#register">Regístrate aquí</a></p>
+      </div>
+    </main>
+         <footer>
+            <p>&copy; 2025 TiendaGamer</p>
+            <p>Contacto: <a href="mailto:lbhd17@hotmail.com">lbhd17@hotmail.com</a></p>
+        </footer>
+  </div>
+</body>
+</html>

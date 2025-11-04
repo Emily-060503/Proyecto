@@ -1,12 +1,29 @@
 
 const express = require('express');
 const path = require('path');
+const { initializeApp } = require('firebase/app');
+const { getFirestore, collection, getDocs, query, where } = require('firebase/firestore');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Configuración de Firebase (reemplaza con tus credenciales)
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_AUTH_DOMAIN",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_STORAGE_BUCKET",
+  messagingSenderId: "TU_MESSAGING_SENDER_ID",
+  appId: "TU_APP_ID"
+};
+
+// Inicializar Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+
 // Parse URL-encoded bodies (form submissions)
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Almacenamiento en memoria (temporal)
 const juegos = [];
@@ -41,7 +58,45 @@ app.use('/media', express.static(path.join(__dirname, 'media')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Rutas principales (mapeamos los enlaces .html usados en las vistas a rutas dinámicas)
-app.get(['/', '/index.html'], (req, res) => res.render('index'));
+// Ruta principal - muestra el login
+app.get('/', (req, res) => res.render('inicio'));
+
+// Ruta POST para procesar el login
+app.post('/login', async (req, res) => {
+  try {
+    const { usuario, contrasena } = req.body;
+
+    if (!usuario || !contrasena) {
+      return res.status(400).render('inicio', { 
+        error: 'Por favor ingrese usuario y contraseña' 
+      });
+    }
+
+    // Buscar usuario en la colección 'usuarios' de Firebase
+    const usuariosRef = collection(db, 'usuarios');
+    const q = query(usuariosRef, where('usuario', '==', usuario), where('contrasena', '==', contrasena));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      return res.status(401).render('inicio', { 
+        error: 'Usuario o contraseña incorrectos' 
+      });
+    }
+
+    // Login exitoso - redirigir a index
+    res.redirect('/home');
+
+  } catch (error) {
+    console.error('Error al verificar usuario:', error);
+    res.status(500).render('inicio', { 
+      error: 'Error al procesar el login. Intente nuevamente.' 
+    });
+  }
+});
+
+// Ruta para home (después del login exitoso)
+app.get(['/home', '/index.html'], (req, res) => res.render('index'));
+
 app.get(['/catalogo', '/catalogo.html'], (req, res) => res.render('catalogo'));
 
 // Mostrar el formulario para agregar un juego
@@ -60,6 +115,7 @@ const validateGame = (data) => {
   if (!data.imageUrl || !data.imageUrl.trim()) errors.push('La URL de la imagen es obligatoria');
   return errors;
 };
+
 
 app.post('/agregar', (req, res) => {
   const { name, description, price, platform, imageUrl } = req.body || {};
