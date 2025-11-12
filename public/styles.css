@@ -110,7 +110,7 @@
 
     /* Formularios */
     .form-container {
-      max-width: 600px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 24px;
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -119,6 +119,12 @@
     }
 
     .formulario {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .form-column {
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -174,6 +180,13 @@
 
     .formulario button:active {
       transform: translateY(1px);
+    }
+
+    /* Responsive: en móviles volver a una columna */
+    @media (max-width: 768px) {
+      .formulario {
+        grid-template-columns: 1fr;
+      }
     }
 
     .errors {

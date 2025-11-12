@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tienda Gamer — Inicio</title>
+  <title>Base Gamer — Inicio</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
@@ -26,39 +26,64 @@
     <!-- Header con navegación y mailto -->
     <header>
       <div class="logo">
-        <div class="mark">G</div>
+        <div class="mark">BG</div>
         <div>
-          <h1>TiendaGamer</h1>
-          <p>Juegos — Ofertas — Comunidad</p>
+          <h1>BaseGamer</h1>
+          <p>Añadir - Modificar - Juegos</p>
         </div>
       </div>
 
       <nav>
         <!-- Marcador interno: #ofertas -->
-        <a href="modificar.html">Modificar</a>
-        <a href="agregar.html">Agregar</a>
+          <a href="/modificar">Modificar</a>
+          <a href="/agregar">Agregar</a>
         <a href="/home">Inicio</a>
-        <a href="catalogo.html">Catálogo</a>
-        <a href="#ofertas">Ofertas</a>
-        <a href="#contacto">Contacto</a>
+          <a href="/catalogo">Catálogo</a>
 
-        <!-- Search (role=search para accesibilidad) -->
-        <div class="search" role="search">
+        <!-- Search funcional con formulario y sugerencias -->
+        <form class="search" role="search" method="get" action="/home" style="position:relative;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <input placeholder="Buscar juegos, plataformas..." aria-label="Buscar">
-        </div>
+          <input name="q" id="searchHome" placeholder="Buscar juegos..." aria-label="Buscar" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+          <button type="submit" style="display:none"></button>
+          <div id="suggestionsHome" class="search-suggestions" style="position:absolute;top:42px;left:0;right:0;z-index:10"></div>
+        </form>
       </nav>
     </header>
 
     <main>
+      <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+        <section id="resultados" class="section">
+          <h3>Resultados de búsqueda para "<%= searchQuery %>"</h3>
+          <div class="grid">
+            <% if (juegos && juegos.length) { %>
+              <% juegos.forEach(juego => { %>
+                <article class="card">
+                  <div class="thumb"><img src="<%= juego.imagen %>" alt="<%= juego.nombre %>"></div>
+                  <h4 class="title"><%= juego.nombre %></h4>
+                  <div class="meta">
+                    <div class="price">$<%= juego.precio %></div>
+                  </div>
+                  <p style="color:var(--muted);font-size:13px;margin:6px 0 0;"><%= juego.descripcion %></p>
+                  <div class="actions">
+                    <a href="/detalles/<%= juego.id %>" class="small-btn add">Detalles</a>
+                  </div>
+                </article>
+              <% }) %>
+            <% } else { %>
+              <p style="color:var(--muted);text-align:center;width:100%;">No se encontraron resultados.</p>
+            <% } %>
+          </div>
+        </section>
+      <% } %>
       <!-- HERO / BANNER con mapa de imagen activo -->
       <section class="hero">
         <div class="left">
           <h2>Sumérgete en la próxima generación de juegos</h2>
-          <p>Descubre lanzamientos, ofertas exclusivas y ediciones limitadas. Compra seguro y rápido en TiendaGamer.</p>
+          <p>Base de Datos de videojuegos, añade, modifica y elimina. Crea tu propia base de datos de videojuegos con BaseGamer.</p>
           <div class="cta">
-            <a href="#ofertas" class="btn btn-primary" role="button">Ver ofertas</a>
-            <a href="catalogo.html" class="btn btn-ghost" role="button">Ver catálogo</a>
+            <a href="/catalogo" class="btn btn-ghost" role="button">Ver catálogo</a>
+            <a href="/agregar" class="btn btn-ghost" role="button">Agregar juego</a>
+            <a href="/modificar" class="btn btn-ghost" role="button">Modificar juego</a>
           </div>
         </div>
 
@@ -70,16 +95,13 @@
             - El atributo usemap="#banner-map" conecta con <map> definido abajo.
             - Los coords son aproximados para una anchura ~1200px — ajusta si cambias la imagen.
           -->
-          <img src="img/banner.jpg" alt="Banner gaming" usemap="#banner-map" width="1200" height="500">
+          <img src="/img/logo.png" alt="Banner gaming" usemap="#banner-map" width="1200" height="500">
 
           <!-- Mapa de imagen: tres áreas clicables -->
           <map name="banner-map" id="banner-map">
             <!-- Área 1: zona izquierda (ej. control) -> Catálogo -->
-            <area shape="rect" coords="40,280,360,460" href="catalogo.html" alt="Ir a Catálogo" title="Ir a Catálogo">
-            <!-- Área 2: zona centro (pantalla) -> Ofertas (marcador interno) -->
-            <area shape="rect" coords="420,60,920,420" href="#ofertas" alt="Ver Ofertas" title="Ver Ofertas">
-            <!-- Área 3: zona derecha (logo/mando) -> Contacto (mailto) -->
-            <area shape="rect" coords="960,220,1180,460" href="#contacto" alt="Contacto" title="Contacto">
+            <area shape="rect" coords="40,280,360,460" href="/catalogo" alt="Ir a Catálogo" title="Ir a Catálogo">
+            
           </map>
         </div>
       </section>
@@ -88,70 +110,57 @@
       <section id="ofertas" class="section">
         <h3>Ofertas destacadas</h3>
         <div class="grid">
-
-          <!-- Card 1: Horizon (enlace a página multimedia) -->
-          <article class="card">
-            <div class="thumb"><img src="img/horizon.jpg" alt="Horizon Forbidden West"></div>
-            <h4 class="title"><a href="juego_horizon.html">Horizon Forbidden West™ — Complete Edition</a></h4>
-            <div class="meta">
-              <div class="price">$599.99</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Acompaña a Aloy en una aventura épica por un mundo vivo y peligroso.</p>
-            <div class="actions">
-              <!-- Enlaces a la página multimedia del juego -->
-              <a class="small-btn add" href="juego_horizon.html">Detalles</a>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 2: The Forest -->
-          <article class="card">
-            <div class="thumb"><img src="img/forest.jpg" alt="The Forest"></div>
-            <h4 class="title"><a href="juego_forest.html">The Forest</a></h4>
-            <div class="meta">
-              <div class="price">De $185.99 a $45.99</div>
-              <div class="stock" style="color:var(--accent-green)">Oferta</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Supervivencia, misterio y peligros en un bosque que no perdona.</p>
-            <div class="actions">
-              <a class="small-btn add" href="juego_forest.html">Detalles</a>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 3: Ghost of Tsushima -->
-          <article class="card">
-            <div class="thumb"><img src="img/ghost.jpg" alt="Ghost of Tsushima"></div>
-            <h4 class="title"><a href="juego_ghost.html">Ghost of Tsushima — Director's Cut</a></h4>
-            <div class="meta">
-              <div class="price">$669.33</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">La leyenda de Jin Sakai, samurái contra la invasión.</p>
-            <div class="actions">
-              <a class="small-btn add" href="juego_ghost.html">Detalles</a>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 4: Resident Evil 4 -->
-          <article class="card">
-            <div class="thumb"><img src="img/evil.jpg" alt="Resident Evil 4"></div>
-            <h4 class="title"><a href="juego_residentevil.html">Resident Evil 4 — Gold Edition</a></h4>
-            <div class="meta">
-              <div class="price">$449.40</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Acción y horror en una entrega clásica y renovada.</p>
-            <div class="actions">
-              <a class="small-btn add" href="juego_residentevil.html">Detalles</a>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
+          <% if (juegos && juegos.length > 0) { %>
+            <% juegos.forEach(juego => { %>
+              <article class="card">
+                <div class="thumb"><img src="<%= juego.imagen %>" alt="<%= juego.nombre %>"></div>
+                <h4 class="title"><%= juego.nombre %></h4>
+                <div class="meta">
+                  <div class="price">$<%= juego.precio %></div>
+                </div>
+                <p style="color:var(--muted);font-size:13px;margin:6px 0 0;"><%= juego.descripcion %></p>
+                <div class="actions">
+                  <a href="/detalles/<%= juego.id %>" class="small-btn add">Detalles</a>
+                </div>
+              </article>
+            <% }); %>
+          <% } else { %>
+            <p style="color:var(--muted);text-align:center;width:100%;">No hay productos disponibles en este momento.</p>
+          <% } %>
         </div>
       </section>
+
+          <script>
+            // Live suggestions para /home
+            (function(){
+              const input = document.getElementById('searchHome');
+              const box = document.getElementById('suggestionsHome');
+              if (!input || !box) return;
+              let t;
+              input.addEventListener('input', () => {
+                clearTimeout(t);
+                const q = input.value.trim();
+                if (!q) { box.innerHTML = ''; return; }
+                t = setTimeout(async () => {
+                  try {
+                    const res = await fetch(`/buscar?q=${encodeURIComponent(q)}`);
+                    const data = await res.json();
+                    const items = (data.results || []).slice(0,6).map(r => `
+                      <a href="/detalles/${r.id}" class="suggestion-item" style="display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.04);text-decoration:none;color:#fff;margin-top:6px">
+                        <img src="${r.imagen}" alt="${r.nombre}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;">
+                        <div>
+                          <div style="font-weight:600">${r.nombre}</div>
+                          <div style="color:#9AA0A6;font-size:12px;">$${r.precio || ''}</div>
+                        </div>
+                      </a>`).join('');
+                    box.innerHTML = items;
+                  } catch (e) {
+                    box.innerHTML = '';
+                  }
+                }, 250);
+              });
+            })();
+          </script>
 
       <!-- SECCIÓN: CONTACTO (marcador) -->
       <section id="contacto" class="section" style="margin-top:24px;">
@@ -160,8 +169,8 @@
 
         <!-- Enlace mailto con asunto y cuerpo ejemplo -->
         <p>
-          <a href="lbhd17@hotmail.com?subject=Consulta%20TiendaGamer&body=Hola%20TiendaGamer%2C%0A%0AQuisiera%20saber%20...">
-            ✉️ lbhd17@hotmail.com
+          <a href="mailto:BaseGamer.EBA@hotmail.com?subject=Consulta%20BaseGamer&body=Hola%20BaseGamer%2C%0A%0AQuisiera%20saber%20...">
+            ✉️ BaseGamer.EBA@hotmail.com
           </a>
         </p>
 
@@ -171,8 +180,8 @@
 
       <!-- FOOTER con mailto y créditos -->
       <footer style="margin-top:18px;color:var(--muted);font-size:13px;text-align:center">
-        <p>© 2025 TiendaGamer</p>
-        <p>Contacto rápido: <a href="mailto:lbhd17@hotmail.com">lbhd17@hotmail.com</a></p>
+        <p>© 2025 BaseGamer</p>
+        <p>Contacto rápido: <a href="mailto:BaseGamer.EBA@hotmail.com">BaseGamer.EBA@hotmail.com</a></p>
       </footer>
 
     </main>

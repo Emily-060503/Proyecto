@@ -3,244 +3,108 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tienda Gamer — Prototipo</title>
+  <title>Base Gamer — Prototipo</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 
   <!-- Hoja de estilos externa -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <div class="container">
 
     <header>
       <div class="logo">
-        <div class="mark">G</div>
+        <div class="mark">BG</div>
         <div>
-          <h1>TiendaGamer</h1>
-          <p>Juegos — Ofertas — Comunidad</p>
+          <h1>BaseGamer</h1>
+          <p>Añadir - Modificar - Juegos</p>
         </div>
       </div>
 
       <nav>
-        <a href="modificar.html">Modificar</a>
-        <a href="agregar.html">Agregar</a>
-        <a href="index.html">Inicio</a>
-        <a href="catalogo.html">Catálogo</a>
-        <a href="index.html">Ofertas</a>
-        <a href="carrito.html">Carrito</a>
-        
-        <div class="search" role="search">
+        <a href="/modificar">Modificar</a>
+        <a href="/agregar">Agregar</a>
+        <a href="/home">Inicio</a>
+        <a href="/catalogo">Catálogo</a>
+
+        <form class="search" role="search" method="get" action="/catalogo" style="position:relative;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <input placeholder="Buscar juegos, plataformas..." aria-label="Buscar">
-        </div>
+          <input name="q" id="searchCatalogo" placeholder="Buscar juegos..." aria-label="Buscar" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+          <button type="submit" style="display:none"></button>
+          <div id="suggestionsCatalogo" class="search-suggestions" style="position:absolute;top:42px;left:0;right:0;z-index:10"></div>
+        </form>
       </nav>
     </header>
 
     <main>
-      
-        <h2>Catálogo</h2>
-        <h3>De Terror:</h3>  
+      <section id="ofertas" class="section">
+  <h2><%= typeof searchQuery !== 'undefined' && searchQuery ? 'Resultados de búsqueda para "' + searchQuery + '"' : 'Productos:' %></h2> 
         <div class="grid">
-
-              
-          <!-- Card 1 -->
-          <article class="card">
-            <div class="thumb"><img src="img/repo.png" alt="Juego 1"></div>
-            <h4 class="title">R.E.P.O.</h4>
-            <div class="meta">
-              <div class="price">$86.79</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">R.E.P.O. es un juego de horror cooperativo en línea que incluye física, chat de voz por proximidad y monstruos aterradores.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 2 -->
-          <article class="card">
-            <div class="thumb"><img src="img/stray.png" alt="Juego 2"></div>
-            <h4 class="title">Stray</h4>
-            <div class="meta">
-              <div class="price">$191.99</div>
-              <div class="stock">En Stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Perdido, solo y separado de su familia, un gato callejero debe desentrañar un antiguo misterio para escapar de una ciberciudad olvidada y encontrar el camino a casa.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 3 -->
-          <article class="card">
-            <div class="thumb"><img src="img/diablo.png" alt="Juego 3"></div>
-            <h4 class="title">Diablo® IV</h4>
-            <div class="meta">
-              <div class="price">$449.55</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Únete a la lucha por Santuario en Diablo® IV, la aventura de rol y acción definitiva. Vive la campaña alabada por la crítica y nuevo contenido de temporada.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 4 -->
-          <article class="card">
-            <div class="thumb"><img src="img/forest.jpg" alt="Juego 2"></div>
-            <h4 class="title">The Forest</h4>
-            <div class="meta">
-              <div class="price">$185.99</div>
-              <div class="stock" style="color:var(--accent-green)">Oferta</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Como el único superviviente de un accidente de avión de pasajeros, te encuentras en un misterioso bosque luchando por sobrevivir contra una sociedad de mutantes caníbales.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-        </div>
-        <h3>Disparos tercera persona:</h3>
-         <div class="grid">
-
-              
-          <!-- Card 1 -->
-          <article class="card">
-            <div class="thumb"><img src="img/redread.png" alt="Juego 1"></div>
-            <h4 class="title">Red Dead Redemption 2</h4>
-            <div class="meta">
-              <div class="price">$299.75</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Red Dead Redemption 2 es la épica historia de Arthur Morgan y la banda de Van der Linde, que huyen por toda América en el albor de una nueva era. También incluye acceso al mundo multijugador compartido de Red Dead Online.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 2 -->
-          <article class="card">
-            <div class="thumb"><img src="img/gtav.png" alt="Juego 2"></div>
-            <h4 class="title">Grand Theft Auto V Enhanced</h4>
-            <div class="meta">
-              <div class="price">$299.50</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Disfruta de los superventas del entretenimiento Grand Theft Auto V y Grand Theft Auto Online, ahora mejorados para una nueva generación, con impresionantes gráficos, carga más rápida, audio 3D y mucho más, además de contenido exclusivo para los jugadores de GTA Online.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 3 -->
-          <article class="card">
-            <div class="thumb"><img src="img/thelast.png" alt="Juego 3"></div>
-            <h4 class="title">The Last of Us™ Parte I</h4>
-            <div class="meta">
-              <div class="price">$499.50</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Descubre el galardonado juego que inspiró la aclamada serie de televisión. Guía a Joel y Ellie por unos Estados Unidos postapocalípticos y encuentra aliados y enemigos inolvidables en The Last of Us™.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 4 -->
-          <article class="card">
-            <div class="thumb"><img src="img/helldiver.png" alt="Juego 4"></div>
-            <h4 class="title">HELLDIVERS™ 2</h4>
-            <div class="meta">
-              <div class="price">$559.20</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">La última línea de ataque de la galaxia. Alístate en los Helldivers y únete a la lucha por la libertad en una galaxia hostil en un juego de disparos en tercera persona rápido, frenético y feroz.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-        </div>
-        <h3>Casuales:</h3>
-         <div class="grid">
-
-          <!-- Card 1 -->
-          <article class="card">
-            <div class="thumb"><img src="img/picopark.png" alt="Juego 1"></div>
-            <h4 class="title">PICO PARK</h4>
-            <div class="meta">
-              <div class="price">$46.39</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">PICO PARK is a cooperative local/online multiplay action puzzle game for 2-8 players.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 2 -->
-          <article class="card">
-            <div class="thumb"><img src="img/stardewvallery.png" alt="Juego 2"></div>
-            <h4 class="title">Stardew Valley</h4>
-            <div class="meta">
-              <div class="price">$104.99</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">Acabas de heredar la vieja parcela agrícola de tu abuelo de Stardew Valley. Decides partir hacia una nueva vida con unas herramientas usadas y algunas monedas. ¿Te ves capaz de vivir de la tierra y convertir estos campos descuidados en un hogar próspero?</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 3 -->
-          <article class="card">
-            <div class="thumb"><img src="img/bloonds.png" alt="Juego 3"></div>
-            <h4 class="title">Bloons TD 6</h4>
-            <div class="meta">
-              <div class="price">$44.99</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">El exitoso juego de defensa de torres</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
-          <!-- Card 4 -->
-          <article class="card">
-            <div class="thumb"><img src="img/superboony.png" alt="Juego 4"></div>
-            <h4 class="title">Super Bunny Man</h4>
-            <div class="meta">
-              <div class="price">$107.40</div>
-              <div class="stock">En stock</div>
-            </div>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0;">¡Un juego de plataformas cooperativo sobre un notas disfrazado de conejo! Rígete por las leyes de la física y haz equipo con uno o tres amigos (localmente o en línea) para pasaros los niveles, encontrar zanahorias escondidas y competir contra reloj. Siembra el caos zanahorio. Sé Super Bunny Man.</p>
-            <div class="actions">
-              <button class="small-btn add">Detalles</button>
-              <button class="small-btn buy">Agregar</button>
-            </div>
-          </article>
-
+          <% if (juegos && juegos.length > 0) { %>
+            <% juegos.forEach(juego => { %>
+              <!-- Card para <%= juego.nombre %> -->
+              <article class="card">
+                <div class="thumb"><img src="<%= juego.imagen %>" alt="<%= juego.nombre %>"></div>
+                <h4 class="title"><%= juego.nombre %></h4>
+                <div class="meta">
+                  <div class="price">$<%= juego.precio %></div>
+                </div>
+                <p style="color:var(--muted);font-size:13px;margin:6px 0 0;"><%= juego.descripcion %></p>
+                <div class="actions">
+                  <a href="/detalles/<%= juego.id %>" class="small-btn add">Detalles</a>
+                </div>
+              </article>
+            <% }); %> 
+          <% } else { %>
+            <p style="color:var(--muted);text-align:center;width:100%;">
+              <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+                No se encontraron productos que coincidan con "<%= searchQuery %>".
+              <% } else { %>
+                No hay juegos disponibles en este momento.
+              <% } %>
+            </p>
+          <% } %>
         </div>
       </section>
+
       <footer>
-        © 2025 TiendaGamer — Diseño prototipo • Todos los derechos reservados.
+        © 2025 BaseGamer — Diseño prototipo • Todos los derechos reservados.
       </footer>
 
     </main>
   </div>
+  <script>
+    // Live suggestions para /catalogo
+    (function(){
+      const input = document.getElementById('searchCatalogo');
+      const box = document.getElementById('suggestionsCatalogo');
+      if (!input || !box) return;
+      let t;
+      input.addEventListener('input', () => {
+        clearTimeout(t);
+        const q = input.value.trim();
+        if (!q) { box.innerHTML = ''; return; }
+        t = setTimeout(async () => {
+          try {
+            const res = await fetch(`/buscar?q=${encodeURIComponent(q)}`);
+            const data = await res.json();
+            const items = (data.results || []).slice(0,6).map(r => `
+              <a href="/detalles/${r.id}" class="suggestion-item" style="display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.04);text-decoration:none;color:#fff;margin-top:6px">
+                <img src="${r.imagen}" alt="${r.nombre}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;">
+                <div>
+                  <div style=\"font-weight:600\">${r.nombre}</div>
+                  <div style=\"color:#9AA0A6;font-size:12px;\">$${r.precio || ''}</div>
+                </div>
+              </a>`).join('');
+            box.innerHTML = items;
+          } catch (e) {
+            box.innerHTML = '';
+          }
+        }, 250);
+      });
+    })();
+  </script>
 </body>
 </html>

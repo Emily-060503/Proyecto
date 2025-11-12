@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= typeof nombre !== 'undefined' ? nombre : 'Producto' %></title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Orbitron:wght@500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    .media-container{display:flex;flex-direction:column;align-items:center;gap:20px;margin:30px auto;max-width:900px;text-align:center}
+    video{width:100%;height:auto;border-radius:14px;box-shadow:0 0 20px rgba(0,0,0,0.5);outline:none}
+    .gallery{position:relative;max-width:700px;margin:auto}
+    .gallery img{width:100%;height:auto;border-radius:12px;display:block}
+    .gallery button{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:0;color:white;padding:10px;border-radius:50%;cursor:pointer}
+    .gallery button:hover{background:rgba(0,0,0,0.8)}
+    .prev{left:10px}
+    .next{right:10px}
+    .info{max-width:800px;margin:auto;text-align:left;line-height:1.6}
+    .requirements{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+    .req-box{background:rgba(255,255,255,0.03);padding:12px;border-radius:10px}
+    a.btn-back{display:inline-block;margin-top:20px;padding:10px 16px;border-radius:10px;background:var(--accent-blue);color:white;text-decoration:none;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="mark">BG</div>
+        <div>
+          <h1>BaseGamer</h1>
+          <p>Añadir - Modificar - Juegos</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="media-container">
+      <h2><%= nombre %></h2>
+
+      <!-- 🎥 Video -->
+      <% if (typeof video !== 'undefined' && video) { %>
+        <video controls poster="<%= typeof imagen !== 'undefined' ? imagen : '' %>">
+          <source src="<%= video %>" type="video/mp4">
+          Tu navegador no soporta la reproducción de video.
+        </video>
+      <% } %>
+
+      <!-- 🖼️ Galería de imágenes -->
+      <div class="gallery">
+        <img id="galeria" src="<%= typeof imagen1 !== 'undefined' && imagen1 ? imagen1 : (typeof imagen !== 'undefined' ? imagen : '') %>" alt="<%= typeof nombre !== 'undefined' ? nombre : 'Producto' %> screenshot">
+        <button class="prev" onclick="cambiar(-1)">❮</button>
+        <button class="next" onclick="cambiar(1)">❯</button>
+      </div>
+
+      <!-- ℹ️ Descripción + Requisitos -->
+      <div class="info">
+        <p><%= typeof detalles !== 'undefined' ? detalles : (typeof descripcion !== 'undefined' ? descripcion : 'Sin descripción') %></p>
+
+        <div class="requirements">
+          <div class="req-box">
+            <h4>Requisitos mínimos</h4>
+            <ul>
+              <li>SO: <%= typeof min_SO !== 'undefined' ? min_SO : 'No especificado' %></li>
+              <li>CPU: <%= typeof min_CPU !== 'undefined' ? min_CPU : 'No especificado' %></li>
+              <li>RAM: <%= typeof min_RAM !== 'undefined' ? min_RAM : 'No especificado' %></li>
+              <li>GPU: <%= typeof min_GPU !== 'undefined' ? min_GPU : 'No especificado' %></li>
+              <li>Almacenamiento: <%= typeof min_ALM !== 'undefined' ? min_ALM : 'No especificado' %></li>
+            </ul>
+          </div>
+          <div class="req-box">
+            <h4>Requisitos recomendados</h4>
+            <ul>
+              <li>SO: <%= typeof rec_SO !== 'undefined' ? rec_SO : 'No especificado' %></li>
+              <li>CPU: <%= typeof rec_CPU !== 'undefined' ? rec_CPU : 'No especificado' %></li>
+              <li>RAM: <%= typeof rec_RAM !== 'undefined' ? rec_RAM : 'No especificado' %></li>
+              <li>GPU: <%= typeof rec_GPU !== 'undefined' ? rec_GPU : 'No especificado' %></li>
+              <li>Almacenamiento: <%= typeof rec_ALM !== 'undefined' ? rec_ALM : 'No especificado' %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔗 Enlace de regreso -->
+      <a href="/catalogo" class="btn-back">← Volver al catálogo</a>
+    </main>
+
+    <footer>
+      © 2025 BaseGamer 
+    </footer>
+  </div>
+
+  <script>
+    // 📸 Script para cambiar imágenes de la galería
+    const imagenes = [
+      "<%= typeof imagen1 !== 'undefined' && imagen1 ? imagen1 : (typeof imagen !== 'undefined' ? imagen : '') %>",
+      "<%= typeof imagen2 !== 'undefined' && imagen2 ? imagen2 : (typeof imagen !== 'undefined' ? imagen : '') %>",
+      "<%= typeof imagen3 !== 'undefined' && imagen3 ? imagen3 : (typeof imagen !== 'undefined' ? imagen : '') %>"
+    ].filter(img => img && img !== 'undefined' && img.trim() !== '');
+    
+    let indice = 0;
+    
+    function cambiar(d){
+      if (imagenes.length > 1) {
+        indice = (indice + d + imagenes.length) % imagenes.length;
+        document.getElementById("galeria").src = imagenes[indice];
+      }
+    }
+  </script>
+</body>
+</html>

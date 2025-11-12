@@ -12,9 +12,9 @@
     <div class="container">
         <header>
             <div class="logo">
-                <div class="mark">G</div>
+                <div class="mark">BG</div>
                 <div>
-                    <h1>TiendaGamer</h1>
+                    <h1>BaseGamer</h1>
                     <p>Agregar Juego</p>
                 </div>
             </div>
@@ -31,7 +31,7 @@
         <form class="formulario" method="post" action="/agregar">
 
             <% if (typeof errors !== 'undefined' && errors && errors.length) { %>
-                <div class="errors" style="color:#ffb4b4;margin-bottom:12px;">
+                <div class="errors" style="color:#ffb4b4;margin-bottom:12px;grid-column:1/-1;">
                     <ul>
                         <% errors.forEach(function(err){ %>
                             <li><%= err %></li>
@@ -41,31 +41,84 @@
             <% } %>
 
             <% if (typeof success !== 'undefined' && success) { %>
-                <div class="success" style="color:var(--accent-green);margin-bottom:12px;"><%= success %></div>
+                <div class="success" style="color:var(--accent-green);margin-bottom:12px;grid-column:1/-1;"><%= success %></div>
             <% } %>
 
-            <label for="name">Nombre del juego:</label>
-            <input id="name" name="name" type="text" placeholder="Ejemplo: God of War" required value="<%= typeof game !== 'undefined' && game.name ? game.name : '' %>">
+            <!-- Columna 1: Información básica -->
+            <div class="form-column">
+                <h3 style="grid-column:1/-1;color:var(--accent-purple);margin-bottom:8px;">Información Básica</h3>
+                
+                <label for="nombre">Nombre del juego:</label>
+                <input id="nombre" name="nombre" type="text" placeholder="Ejemplo: God of War" required value="<%= typeof productos !== 'undefined' && productos && productos.nombre ? productos.nombre : '' %>">
 
-            <label for="description">Descripción:</label>
-            <textarea id="description" name="description" placeholder="Breve descripción del juego" required><%= typeof game !== 'undefined' && game.description ? game.description : '' %></textarea>
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" placeholder="Breve descripción del juego" required><%= typeof productos !== 'undefined' && productos && productos.descripcion ? productos.descripcion : '' %></textarea>
 
-            <label for="price">Precio (USD):</label>
-            <input id="price" name="price" type="number" step="0.01" placeholder="Ejemplo: 59.99" required value="<%= typeof game !== 'undefined' && game.price ? game.price : '' %>">
+                <label for="precio">Precio (USD):</label>
+                <input id="precio" name="precio" type="number" step="0.01" placeholder="Ejemplo: 59.99" required value="<%= typeof productos !== 'undefined' && productos && productos.precio ? productos.precio : '' %>">
 
-            <label for="platform">Plataforma o Categoría:</label>
-            <input id="platform" name="platform" type="text" placeholder="Ejemplo: PlayStation, Xbox, PC" required value="<%= typeof game !== 'undefined' && game.platform ? game.platform : '' %>">
+                <label for="imagen">Link de imagen del juego:</label>
+                <input id="imagen" name="imagen" type="url" placeholder="https://imagen-del-juego.com" required value="<%= typeof productos !== 'undefined' && productos && productos.imagen ? productos.imagen : '' %>">
 
-            <label for="imageUrl">Link de imagen del juego:</label>
-            <input id="imageUrl" name="imageUrl" type="url" placeholder="https://imagen-del-juego.com" required value="<%= typeof game !== 'undefined' && game.imageUrl ? game.imageUrl : '' %>">
+                <label for="video">Video de pestaña Detalles:</label>
+                <input id="video" name="video" type="text" placeholder="https://video-del-juego.com" value="<%= typeof productos !== 'undefined' && productos && productos.video ? productos.video : '' %>">
 
-            <button type="submit" class="btn">Guardar Juego</button>
+                <label for="imagen1">Imagen 1 para detalles:</label>
+                <input id="imagen1" name="imagen1" type="text" placeholder="https://imagen1-del-juego.com" value="<%= typeof productos !== 'undefined' && productos && productos.imagen1 ? productos.imagen1 : '' %>">
+
+                <label for="imagen2">Imagen 2 para detalles:</label>
+                <input id="imagen2" name="imagen2" type="text" placeholder="https://imagen2-del-juego.com" value="<%= typeof productos !== 'undefined' && productos && productos.imagen2 ? productos.imagen2 : '' %>">
+
+                <label for="detalles">Descripcion o detalles para pestaña detalles:</label>
+                <input id="detalles" name="detalles" type="text" placeholder="Detalles del juego" value="<%= typeof productos !== 'undefined' && productos && productos.detalles ? productos.detalles : '' %>">
+            </div>
+
+            <!-- Columna 2: Requisitos del sistema -->
+            <div class="form-column">
+                <h3 style="color:var(--accent-purple);margin-bottom:8px;">Requisitos del Sistema</h3>
+                
+                <h4 style="color:var(--accent-blue);margin-top:12px;margin-bottom:8px;">Requisitos Mínimos</h4>
+                
+                <label for="min_SO">SO:</label> 
+                <input id="min_SO" name="min_SO" type="text" placeholder="Sistema Operativo mínimo" value="<%= typeof productos !== 'undefined' && productos && productos.min_SO ? productos.min_SO : '' %>">
+                
+                <label for="min_CPU">CPU:</label>
+                <input id="min_CPU" name="min_CPU" type="text" placeholder="CPU mínimo" value="<%= typeof productos !== 'undefined' && productos && productos.min_CPU ? productos.min_CPU : '' %>">
+                
+                <label for="min_RAM">RAM:</label>
+                <input id="min_RAM" name="min_RAM" type="text" placeholder="RAM mínima" value="<%= typeof productos !== 'undefined' && productos && productos.min_RAM ? productos.min_RAM : '' %>">  
+                
+                <label for="min_GPU">GPU:</label>
+                <input id="min_GPU" name="min_GPU" type="text" placeholder="GPU mínima" value="<%= typeof productos !== 'undefined' && productos && productos.min_GPU ? productos.min_GPU : '' %>">
+                
+                <label for="min_ALM">Almacenamiento:</label>
+                <input id="min_ALM" name="min_ALM" type="text" placeholder="Almacenamiento mínimo" value="<%= typeof productos !== 'undefined' && productos && productos.min_ALM ? productos.min_ALM : '' %>">   
+
+                <h4 style="color:var(--accent-blue);margin-top:16px;margin-bottom:8px;">Requisitos Recomendados</h4>
+                
+                <label for="rec_SO">SO:</label> 
+                <input id="rec_SO" name="rec_SO" type="text" placeholder="Sistema Operativo recomendado" value="<%= typeof productos !== 'undefined' && productos && productos.rec_SO ? productos.rec_SO : '' %>">
+                
+                <label for="rec_CPU">CPU:</label>
+                <input id="rec_CPU" name="rec_CPU" type="text" placeholder="CPU recomendado" value="<%= typeof productos !== 'undefined' && productos && productos.rec_CPU ? productos.rec_CPU : '' %>">
+                
+                <label for="rec_RAM">RAM:</label>
+                <input id="rec_RAM" name="rec_RAM" type="text" placeholder="RAM recomendada" value="<%= typeof productos !== 'undefined' && productos && productos.rec_RAM ? productos.rec_RAM : '' %>">  
+                
+                <label for="rec_GPU">GPU:</label>
+                <input id="rec_GPU" name="rec_GPU" type="text" placeholder="GPU recomendada" value="<%= typeof productos !== 'undefined' && productos && productos.rec_GPU ? productos.rec_GPU : '' %>">
+                
+                <label for="rec_ALM">Almacenamiento:</label>
+                <input id="rec_ALM" name="rec_ALM" type="text" placeholder="Almacenamiento recomendado" value="<%= typeof productos !== 'undefined' && productos && productos.rec_ALM ? productos.rec_ALM : '' %>">
+            </div>
+
+            <button type="submit" class="btn" style="grid-column:1/-1;margin-top:20px;">Guardar Juego</button>
         </form>
     </main>
 
         <footer>
-            <p>&copy; 2025 TiendaGamer</p>
-            <p>Contacto: <a href="mailto:lbhd17@hotmail.com">lbhd17@hotmail.com</a></p>
+            <p>&copy; 2025 BaseGamer</p>
+            <p>Contacto: <a href="mailto:BaseGamer.EBA@hotmail.com">BaseGamer.EBA@hotmail.com</a></p>
         </footer>
     </div>
 </body>
