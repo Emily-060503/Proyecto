@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const cookieSession = require('cookie-session');
 const path = require('path');
 const { initializeApp } = require('firebase/app');
 const { getFirestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc } = require('firebase/firestore');
@@ -32,6 +33,25 @@ debugLog('Firebase inicializado correctamente');
 // Parse URL-encoded bodies (form submissions)
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// Sesiones: mantener sesión iniciada hasta cerrar sesión
+const sessionSecret = process.env.SESSION_SECRET || 'dev-secret-change-in-prod';
+app.use(cookieSession({
+  name: 'bg_session',
+  keys: [sessionSecret],
+  // 30 días
+  maxAge: 30 * 24 * 60 * 60 * 1000,
+  sameSite: 'lax',
+  httpOnly: true,
+  secure: isProd
+}));
+
+// Exponer estado de autenticación a las vistas
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = !!(req.session && req.session.user);
+  res.locals.username = req.session && req.session.user ? req.session.user.usuario : null;
+  next();
+});
 
 // Middleware de logging solo en desarrollo
 if (!isProd) {
@@ -145,6 +165,9 @@ if (!isProd) {
 // Ruta principal - muestra el login
 app.get('/', (req, res) => {
   try {
+    if (req.session && req.session.user) {
+      return res.redirect('/home');
+    }
     debugLog('Renderizando página de inicio...');
     res.render('inicio', { error: null });
   } catch (error) {
@@ -198,8 +221,10 @@ app.post('/login', async (req, res) => {
       });
     }
 
-    // Login exitoso - redirigir a index
-  debugLog('¡Login exitoso!');
+    // Login exitoso - guardar sesión y redirigir
+    const userDoc = querySnapshot.docs[0];
+    req.session.user = { id: userDoc.id, usuario };
+    debugLog('¡Login exitoso! Usuario en sesión:', usuario);
     res.redirect('/home');
 
   } catch (error) {
@@ -210,6 +235,24 @@ app.post('/login', async (req, res) => {
     });
   }
 });
+
+// Cerrar sesión
+app.get('/logout', (req, res) => {
+  try {
+    req.session = null; // cookie-session: limpiar cookie
+  } catch (e) {
+    // ignore
+  }
+  return res.redirect('/');
+});
+
+// Middleware para proteger rutas
+function ensureAuth(req, res, next) {
+  if (!req.session || !req.session.user) {
+    return res.redirect('/');
+  }
+  next();
+}
 
 // Ruta para home (después del login exitoso) con búsqueda
 app.get(['/home', '/index.html'], async (req, res) => {
@@ -419,13 +462,13 @@ app.get(['/detalles/:id', '/detalles'], async (req, res) => {
 });
 
 // Mostrar el formulario para agregar un juego
-app.get(['/agregar', '/agregar.html'], (req, res) => {
+app.get(['/agregar', '/agregar.html'], ensureAuth, (req, res) => {
 	res.render('agregar', { errors: [], success: null, productos: {} });
 });
 
 
 // Procesar formulario de agregar: guardar en Firestore en la colección 'productos'
-app.post('/agregar', async (req, res) => {
+app.post('/agregar', ensureAuth, async (req, res) => {
   try {
     // Aceptamos campos con nombres: nombre, precio, descripcion, imagen, video, imagen1..3, detalles, min_*, rec_*
     const body = req.body || {};
@@ -478,7 +521,7 @@ app.post('/agregar', async (req, res) => {
 
 // Buscar y mostrar formulario de modificación
 // Buscar y mostrar formulario de modificación (usa Firestore)
-app.get(['/modificar', '/modificar.html'], async (req, res) => {
+app.get(['/modificar', '/modificar.html'], ensureAuth, async (req, res) => {
   try {
     const q = (req.query.q || '').trim();
     if (!q) {
@@ -518,7 +561,7 @@ app.get(['/modificar', '/modificar.html'], async (req, res) => {
 });
 
 // Procesar modificación: actualizar documento en Firestore
-app.post('/modificar/:id', async (req, res) => {
+app.post('/modificar/:id', ensureAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body || {};

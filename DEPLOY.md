@@ -64,6 +64,7 @@ FIREBASE_STORAGE_BUCKET=proyecto-ef176.firebasestorage.app
 FIREBASE_MESSAGING_SENDER_ID=953870791085
 FIREBASE_APP_ID=1:953870791085:web:4a414c3b57eacf98b77124
 FIREBASE_MEASUREMENT_ID=G-LNJHBLN7ZK
+SESSION_SECRET=una_cadena_larga_y_secreta
 NODE_ENV=production
 ```
 
@@ -139,6 +140,7 @@ Render redesplegar automáticamente en 2-3 minutos.
 
 **Causas comunes:**
 - Variables de entorno faltantes o incorrectas
+   - Recuerda incluir SESSION_SECRET para sesiones persistentes
 - Puerto incorrecto (debe usar `process.env.PORT`)
 - Dependencias faltantes en `package.json`
 

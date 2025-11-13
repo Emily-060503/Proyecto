@@ -17,6 +17,7 @@ FIREBASE_STORAGE_BUCKET=proyecto-ef176.firebasestorage.app
 FIREBASE_MESSAGING_SENDER_ID=953870791085
 FIREBASE_APP_ID=1:953870791085:web:4a414c3b57eacf98b77124
 FIREBASE_MEASUREMENT_ID=G-LNJHBLN7ZK
+SESSION_SECRET=una_cadena_larga_y_secreta
 NODE_ENV=production
 ```
 
@@ -79,6 +80,7 @@ En la sección **"Environment Variables"**:
 | `FIREBASE_MESSAGING_SENDER_ID` | `953870791085` |
 | `FIREBASE_APP_ID` | `1:953870791085:web:4a414c3b57eacf98b77124` |
 | `FIREBASE_MEASUREMENT_ID` | `G-LNJHBLN7ZK` |
+| `SESSION_SECRET` | `una_cadena_larga_y_secreta` |
 | `NODE_ENV` | `production` |
 
 **💡 Tip:** Copia y pega desde tu archivo `.env` local para evitar errores
@@ -178,7 +180,7 @@ Antes de marcar como completo:
 
 - [ ] Cuenta en Render creada
 - [ ] Repositorio conectado
-- [ ] Todas las 8 variables de entorno configuradas
+ - [ ] Todas las variables de entorno configuradas (Firebase + SESSION_SECRET)
 - [ ] Deploy exitoso (estado "Live")
 - [ ] URL funciona en el navegador
 - [ ] Login funciona
