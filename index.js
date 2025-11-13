@@ -6,7 +6,7 @@ const express = require('express');
 const cookieSession = require('cookie-session');
 const path = require('path');
 const { initializeApp } = require('firebase/app');
-const { getFirestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc } = require('firebase/firestore');
+const { getFirestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc, deleteDoc } = require('firebase/firestore');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -664,6 +664,22 @@ app.post('/modificar/:id', ensureAuth, async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar producto:', error);
     return res.status(500).render('modificar', { game: null, errors: ['Error al actualizar producto'], success: null, searched: false });
+  }
+});
+// Eliminar producto
+app.post('/eliminar/:id', ensureAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).render('modificar', { game: null, errors: ['ID no proporcionado'], success: null, searched: false });
+    }
+    const productoRef = doc(db, 'productos', id);
+    await deleteDoc(productoRef);
+    // Tras eliminar, redirige al catálogo con un parámetro de éxito
+    return res.redirect('/catalogo');
+  } catch (error) {
+    console.error('Error al eliminar producto:', error);
+    return res.status(500).render('modificar', { game: null, errors: ['Error al eliminar producto'], success: null, searched: false });
   }
 });
 app.get(['/juego_horizon', '/juego_horizon.html', '/juego/horizon'], (req, res) => res.render('juego_horizon'));

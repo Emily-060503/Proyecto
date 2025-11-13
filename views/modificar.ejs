@@ -136,7 +136,12 @@
                     <input id="rec_ALM" name="rec_ALM" type="text" placeholder="Almacenamiento recomendado" value="<%= typeof game !== 'undefined' && game && game.rec_ALM ? game.rec_ALM : '' %>">
                 </div>
 
-                <button type="submit" class="btn" style="grid-column:1/-1;margin-top:20px;">Actualizar Juego</button>
+                                <div style="grid-column:1/-1;display:flex;gap:12px;justify-content:flex-end;margin-top:20px;">
+                                    <button type="submit" class="btn">Actualizar Juego</button>
+                                                        <form method="post" action="/eliminar/<%= game.id %>" onsubmit="return confirm('¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer.');">
+                                        <button type="submit" class="btn" style="background:#8b1e1e;">Eliminar Producto</button>
+                                    </form>
+                                </div>
             </form>
         <% } %>
 
