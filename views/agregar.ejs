@@ -18,12 +18,19 @@
                     <p>Agregar Juego</p>
                 </div>
             </div>
-            <nav>
-                <a href="/">Inicio</a>
-                <a href="/catalogo">Catálogo</a>
-                <a href="/agregar" class="active">Agregar</a>
-                <a href="/modificar">Modificar</a>
-            </nav>
+               <nav>
+                    <a href="/modificar">Modificar</a>
+                    <a href="/agregar">Agregar</a>
+                    <a href="/home">Inicio</a>
+                    <a href="/catalogo">Catálogo</a>
+
+                    <form class="search" role="search" method="get" action="/catalogo" style="position:relative;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <input name="q" id="searchCatalogo" placeholder="Buscar juegos..." aria-label="Buscar" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+                    <button type="submit" style="display:none"></button>
+                    <div id="suggestionsCatalogo" class="search-suggestions" style="position:absolute;top:42px;left:0;right:0;z-index:10"></div>
+                    </form>
+                </nav>
         </header>
 
     <main class="form-container">
@@ -121,5 +128,36 @@
             <p>Contacto: <a href="mailto:BaseGamer.EBA@hotmail.com">BaseGamer.EBA@hotmail.com</a></p>
         </footer>
     </div>
+        <script>
+            // Live suggestions para el buscador del header en /agregar (igual que /catalogo)
+            (function(){
+                const input = document.getElementById('searchCatalogo');
+                const box = document.getElementById('suggestionsCatalogo');
+                if (!input || !box) return;
+                let t;
+                input.addEventListener('input', () => {
+                    clearTimeout(t);
+                    const q = input.value.trim();
+                    if (!q) { box.innerHTML = ''; return; }
+                    t = setTimeout(async () => {
+                        try {
+                            const res = await fetch(`/buscar?q=${encodeURIComponent(q)}`);
+                            const data = await res.json();
+                            const items = (data.results || []).slice(0,6).map(r => `
+                                <a href="/detalles/${r.id}" class="suggestion-item">
+                                    <img src="${r.imagen}" alt="${r.nombre}" class="suggestion-thumb">
+                                    <div class="suggestion-text">
+                                        <div class="suggestion-title">${r.nombre}</div>
+                                        <div class="suggestion-price">$${r.precio || ''}</div>
+                                    </div>
+                                </a>`).join('');
+                            box.innerHTML = items;
+                        } catch (e) {
+                            box.innerHTML = '';
+                        }
+                    }, 250);
+                });
+            })();
+        </script>
 </body>
 </html>

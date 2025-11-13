@@ -91,11 +91,11 @@
             const res = await fetch(`/buscar?q=${encodeURIComponent(q)}`);
             const data = await res.json();
             const items = (data.results || []).slice(0,6).map(r => `
-              <a href="/detalles/${r.id}" class="suggestion-item" style="display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.04);text-decoration:none;color:#fff;margin-top:6px">
-                <img src="${r.imagen}" alt="${r.nombre}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;">
-                <div>
-                  <div style=\"font-weight:600\">${r.nombre}</div>
-                  <div style=\"color:#9AA0A6;font-size:12px;\">$${r.precio || ''}</div>
+              <a href="/detalles/${r.id}" class="suggestion-item">
+                <img src="${r.imagen}" alt="${r.nombre}" class="suggestion-thumb">
+                <div class="suggestion-text">
+                  <div class="suggestion-title">${r.nombre}</div>
+                  <div class="suggestion-price">$${r.precio || ''}</div>
                 </div>
               </a>`).join('');
             box.innerHTML = items;

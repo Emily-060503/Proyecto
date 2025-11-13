@@ -65,6 +65,28 @@
     }
     .search input{background:transparent;border:0;color:#fff;outline:none;width:180px}
 
+    /* Live search suggestions overlay */
+    .search-suggestions{
+      background: #0B0B0B; /* sólido oscuro */
+      color:#fff;
+      border: 1px solid #1f1f1f;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+      max-height: 340px;
+      overflow: auto;
+      z-index: 9999 !important; /* sobre cualquier banner/hero */
+    }
+    .search-suggestions .suggestion-item{
+      display:flex;gap:10px;align-items:center;padding:10px;border-radius:8px;
+      background: #141414 !important; /* sólido para el item */
+      text-decoration:none;color:#fff !important;margin-top:6px
+    }
+    .search-suggestions .suggestion-item:hover{ background: #1C1C1C !important; }
+    .search-suggestions .suggestion-thumb{ width:44px;height:44px;object-fit:cover;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.4) }
+    .search-suggestions .suggestion-title{ font-weight:600 }
+    .search-suggestions .suggestion-price{ color:#9AA0A6;font-size:12px }
+
     /* Hero / Banner */
     .hero{
       margin-top:16px;
