@@ -35,23 +35,34 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Sesiones: mantener sesión iniciada hasta cerrar sesión
-const sessionSecret = process.env.SESSION_SECRET || 'dev-secret-change-in-prod';
+const sessionSecret = process.env.SESSION_SECRET || 'fallback-secret-please-set-SESSION_SECRET-in-env';
+
+console.log('🔐 Configurando sesiones...');
+console.log('   SESSION_SECRET configurado:', process.env.SESSION_SECRET ? 'SÍ ✅' : 'NO ⚠️ (usando fallback)');
+console.log('   Entorno:', isProd ? 'PRODUCCIÓN' : 'DESARROLLO');
 
 // Configurar confianza en proxy para Render (importante para cookies seguras)
 if (isProd) {
   app.set('trust proxy', 1); // Confiar en el primer proxy (Render)
+  console.log('   Trust proxy: ACTIVADO (para Render)');
 }
 
-app.use(cookieSession({
-  name: 'bg_session',
-  keys: [sessionSecret],
-  // 30 días
-  maxAge: 30 * 24 * 60 * 60 * 1000,
-  sameSite: 'lax',
-  httpOnly: true,
-  secure: isProd, // true en producción (HTTPS), false en desarrollo
-  signed: true
-}));
+try {
+  app.use(cookieSession({
+    name: 'bg_session',
+    keys: [sessionSecret],
+    // 30 días
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    sameSite: 'lax',
+    httpOnly: true,
+    secure: isProd, // true en producción (HTTPS), false en desarrollo
+    signed: true
+  }));
+  console.log('✅ Middleware de sesiones configurado correctamente');
+} catch (error) {
+  console.error('❌ ERROR al configurar sesiones:', error.message);
+  process.exit(1);
+}
 
 // Debug de cookies en desarrollo
 if (!isProd) {
@@ -674,6 +685,35 @@ app.use((req, res) => {
 	}
 });
 
-app.listen(PORT, () => {
-	console.log(`Servidor arrancado en http://localhost:${PORT} (ENV PORT=${process.env.PORT || 'none'})`);
+// Error handler global
+app.use((err, req, res, next) => {
+	console.error('❌ Error no manejado:', err);
+	console.error('Stack:', err.stack);
+	res.status(500).send('Error interno del servidor');
+});
+
+const server = app.listen(PORT, () => {
+	console.log('');
+	console.log('🚀 ========================================');
+	console.log(`✅ Servidor iniciado correctamente`);
+	console.log(`📍 URL: http://localhost:${PORT}`);
+	console.log(`🌍 Entorno: ${isProd ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
+	console.log(`🔥 Firebase: ${firebaseConfig.projectId}`);
+	console.log('🚀 ========================================');
+	console.log('');
+});
+
+// Manejo de errores de inicio
+server.on('error', (error) => {
+	console.error('❌ ERROR al iniciar el servidor:', error.message);
+	process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+	console.error('❌ Promesa rechazada no manejada:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+	console.error('❌ Excepción no capturada:', error);
+	process.exit(1);
 });
