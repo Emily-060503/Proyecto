@@ -36,6 +36,12 @@ app.use(express.json());
 
 // Sesiones: mantener sesión iniciada hasta cerrar sesión
 const sessionSecret = process.env.SESSION_SECRET || 'dev-secret-change-in-prod';
+
+// Configurar confianza en proxy para Render (importante para cookies seguras)
+if (isProd) {
+  app.set('trust proxy', 1); // Confiar en el primer proxy (Render)
+}
+
 app.use(cookieSession({
   name: 'bg_session',
   keys: [sessionSecret],
@@ -43,13 +49,30 @@ app.use(cookieSession({
   maxAge: 30 * 24 * 60 * 60 * 1000,
   sameSite: 'lax',
   httpOnly: true,
-  secure: isProd
+  secure: isProd, // true en producción (HTTPS), false en desarrollo
+  signed: true
 }));
+
+// Debug de cookies en desarrollo
+if (!isProd) {
+  app.use((req, res, next) => {
+    debugLog('Cookie headers:', req.headers.cookie);
+    debugLog('Session object:', req.session);
+    next();
+  });
+}
 
 // Exponer estado de autenticación a las vistas
 app.use((req, res, next) => {
-  res.locals.isAuthenticated = !!(req.session && req.session.user);
-  res.locals.username = req.session && req.session.user ? req.session.user.usuario : null;
+  const hasSession = req.session && req.session.user;
+  res.locals.isAuthenticated = !!hasSession;
+  res.locals.username = hasSession ? req.session.user.usuario : null;
+  debugLog('Session check:', { 
+    path: req.path,
+    hasSession, 
+    user: req.session?.user, 
+    isAuth: res.locals.isAuthenticated 
+  });
   next();
 });
 
@@ -223,9 +246,17 @@ app.post('/login', async (req, res) => {
 
     // Login exitoso - guardar sesión y redirigir
     const userDoc = querySnapshot.docs[0];
-    req.session.user = { id: userDoc.id, usuario };
-    debugLog('¡Login exitoso! Usuario en sesión:', usuario);
-    res.redirect('/home');
+    const userData = { id: userDoc.id, usuario: usuario };
+    
+    // Asignar directamente al objeto session para que cookie-session lo detecte
+    req.session.user = userData;
+    
+    console.log('✅ Login exitoso! Usuario:', usuario);
+    console.log('📦 Session después de login:', JSON.stringify(req.session));
+    console.log('🍪 Cookie será enviada con nombre: bg_session');
+    
+    // Redirigir a home
+    return res.redirect('/home');
 
   } catch (error) {
     console.error('Error al verificar usuario:', error);
@@ -248,9 +279,18 @@ app.get('/logout', (req, res) => {
 
 // Middleware para proteger rutas
 function ensureAuth(req, res, next) {
+  debugLog('ensureAuth check:', { 
+    hasSession: !!req.session, 
+    hasUser: !!(req.session && req.session.user),
+    sessionData: req.session 
+  });
+  
   if (!req.session || !req.session.user) {
+    debugLog('No session found, redirecting to /');
     return res.redirect('/');
   }
+  
+  debugLog('Session valid, proceeding');
   next();
 }
 
