@@ -163,6 +163,17 @@
                     }, 250);
                 });
             })();
+            // Toggle menú responsive
+            (function(){
+              const toggle = document.querySelector('.nav-toggle');
+              const menu = document.getElementById('navMenu');
+              if(!toggle || !menu) return;
+              toggle.addEventListener('click', () => {
+                const open = menu.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', open);
+              });
+            })();
         </script>
 </body>
 </html>
+
