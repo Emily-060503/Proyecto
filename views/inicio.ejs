@@ -103,6 +103,15 @@
           <p>Inicio sesión</p>
         </div>
       </div>
+      <nav>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="navMenu" type="button">☰ Menú</button>
+        <div id="navMenu" class="nav-menu">
+          <a href="/home">Inicio</a>
+          <a href="/catalogo">Catálogo</a>
+          <a href="/agregar">Agregar</a>
+          <a href="/modificar">Modificar</a>
+        </div>
+      </nav>
     </header>
 
     <main>
@@ -132,5 +141,16 @@
             <p>Contacto: <a href="mailto:BaseGamer.EBA@hotmail.com">BaseGamer.EBA@hotmail.com</a></p>
         </footer>
   </div>
+  <script>
+    (function(){
+      const toggle = document.querySelector('.nav-toggle');
+      const menu = document.getElementById('navMenu');
+      if(!toggle || !menu) return;
+      toggle.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open);
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -34,17 +34,19 @@
         </div>
       </div>
       <nav>
-        <a href="/modificar">Modificar</a>
-        <a href="/agregar">Agregar</a>
-        <a href="/home">Inicio</a>
-        <a href="/catalogo">Catálogo</a>
-
-        <form class="search" role="search" method="get" action="/catalogo" style="position:relative;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <input name="q" id="searchCatalogo" placeholder="Buscar juegos..." aria-label="Buscar" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
-          <button type="submit" style="display:none"></button>
-          <div id="suggestionsCatalogo" class="search-suggestions" style="position:absolute;top:42px;left:0;right:0;z-index:10"></div>
-        </form>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="navMenu" type="button">☰ Menú</button>
+        <div id="navMenu" class="nav-menu">
+          <a href="/home">Inicio</a>
+          <a href="/catalogo">Catálogo</a>
+          <a href="/agregar">Agregar</a>
+          <a href="/modificar">Modificar</a>
+          <form class="search" role="search" method="get" action="/catalogo" style="position:relative;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input name="q" id="searchCatalogo" placeholder="Buscar juegos..." aria-label="Buscar" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+            <button type="submit" style="display:none"></button>
+            <div id="suggestionsCatalogo" class="search-suggestions" style="position:absolute;top:42px;left:0;right:0;z-index:10"></div>
+          </form>
+        </div>
       </nav>
     </header>
 
@@ -53,18 +55,40 @@
 
       <!-- 🎥 Video -->
       <% if (typeof video !== 'undefined' && video) { %>
-        <video controls poster="<%= typeof imagen !== 'undefined' ? imagen : '' %>">
-          <source src="<%= video %>" type="video/mp4">
-          Tu navegador no soporta la reproducción de video.
-        </video>
+        <% const v = (video || '').trim(); const isYouTube = /youtu\.be|youtube\.com/.test(v); %>
+        <% if (isYouTube) { %>
+          <% /* Transformar URL a embed */ %>
+          <% let embedUrl = v;
+             if (v.includes('watch?v=')) { embedUrl = 'https://www.youtube.com/embed/' + v.split('watch?v=')[1].split('&')[0]; }
+             else if (v.includes('youtu.be/')) { embedUrl = 'https://www.youtube.com/embed/' + v.split('youtu.be/')[1].split('?')[0]; }
+          %>
+          <iframe
+            src="<%= embedUrl %>"
+            title="Video"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            style="width:100%;aspect-ratio:16/9;border:0;border-radius:14px;box-shadow:0 0 20px rgba(0,0,0,0.5);"
+          ></iframe>
+        <% } else { %>
+          <video controls playsinline preload="metadata" poster="<%= typeof imagen !== 'undefined' ? imagen : '' %>">
+            <source src="<%= v %>" type="video/mp4">
+            Tu navegador no soporta la reproducción de video.
+          </video>
+        <% } %>
       <% } %>
 
-      <!-- 🖼️ Galería de imágenes -->
-      <div class="gallery">
-        <img id="galeria" src="<%= typeof imagen1 !== 'undefined' && imagen1 ? imagen1 : (typeof imagen !== 'undefined' ? imagen : '') %>" alt="<%= typeof nombre !== 'undefined' ? nombre : 'Producto' %> screenshot">
-        <button class="prev" onclick="cambiar(-1)">❮</button>
-        <button class="next" onclick="cambiar(1)">❯</button>
-      </div>
+      <!-- 🖼️ Galería de imágenes (sin usar la imagen principal del catálogo) -->
+      <% const tieneGaleria = (typeof imagen1 !== 'undefined' && imagen1) || (typeof imagen2 !== 'undefined' && imagen2) || (typeof imagen3 !== 'undefined' && imagen3); %>
+      <% if (tieneGaleria) { %>
+        <div class="gallery">
+          <img id="galeria" src="<%= imagen1 || imagen2 || imagen3 %>" alt="<%= typeof nombre !== 'undefined' ? nombre : 'Producto' %> screenshot">
+          <button class="prev" onclick="cambiar(-1)">❮</button>
+          <button class="next" onclick="cambiar(1)">❯</button>
+        </div>
+      <% } else { %>
+        <p style="color:var(--muted);font-size:14px;">Sin imágenes adicionales.</p>
+      <% } %>
 
       <!-- ℹ️ Descripción + Requisitos -->
       <div class="info">
@@ -104,11 +128,21 @@
   </div>
 
   <script>
+    // Toggle menú responsive
+    (function(){
+      const toggle = document.querySelector('.nav-toggle');
+      const menu = document.getElementById('navMenu');
+      if(!toggle || !menu) return;
+      toggle.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open);
+      });
+    })();
     // 📸 Script para cambiar imágenes de la galería
     const imagenes = [
-      "<%= typeof imagen1 !== 'undefined' && imagen1 ? imagen1 : (typeof imagen !== 'undefined' ? imagen : '') %>",
-      "<%= typeof imagen2 !== 'undefined' && imagen2 ? imagen2 : (typeof imagen !== 'undefined' ? imagen : '') %>",
-      "<%= typeof imagen3 !== 'undefined' && imagen3 ? imagen3 : (typeof imagen !== 'undefined' ? imagen : '') %>"
+      "<%= typeof imagen1 !== 'undefined' && imagen1 ? imagen1 : '' %>",
+      "<%= typeof imagen2 !== 'undefined' && imagen2 ? imagen2 : '' %>",
+      "<%= typeof imagen3 !== 'undefined' && imagen3 ? imagen3 : '' %>"
     ].filter(img => img && img !== 'undefined' && img.trim() !== '');
     
     let indice = 0;

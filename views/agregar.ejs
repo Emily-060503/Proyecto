@@ -18,22 +18,24 @@
                     <p>Agregar Juego</p>
                 </div>
             </div>
-               <nav>
-                    <a href="/modificar">Modificar</a>
-                    <a href="/agregar">Agregar</a>
-                    <a href="/home">Inicio</a>
-                    <a href="/catalogo">Catálogo</a>
-
-                    <form class="search" role="search" method="get" action="/catalogo" style="position:relative;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <input name="q" id="searchCatalogo" placeholder="Buscar juegos..." aria-label="Buscar" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
-                    <button type="submit" style="display:none"></button>
-                    <div id="suggestionsCatalogo" class="search-suggestions" style="position:absolute;top:42px;left:0;right:0;z-index:10"></div>
-                    </form>
-                    <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
-                        <a href="/logout" style="margin-left:8px;">Cerrar sesión<% if (username) { %> (<%= username %>)<% } %></a>
-                    <% } %>
-                </nav>
+                             <nav>
+                                 <button class="nav-toggle" aria-expanded="false" aria-controls="navMenu" type="button">☰ Menú</button>
+                                 <div id="navMenu" class="nav-menu">
+                                        <a href="/home">Inicio</a>
+                                        <a href="/catalogo">Catálogo</a>
+                                        <a href="/agregar">Agregar</a>
+                                        <a href="/modificar">Modificar</a>
+                                        <form class="search" role="search" method="get" action="/catalogo" style="position:relative;">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            <input name="q" id="searchCatalogo" placeholder="Buscar juegos..." aria-label="Buscar" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+                                            <button type="submit" style="display:none"></button>
+                                            <div id="suggestionsCatalogo" class="search-suggestions" style="position:absolute;top:42px;left:0;right:0;z-index:10"></div>
+                                        </form>
+                                        <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
+                                                <a href="/logout">Cerrar sesión<% if (username) { %> (<%= username %>)<% } %></a>
+                                        <% } %>
+                                 </div>
+                             </nav>
         </header>
 
     <main class="form-container">

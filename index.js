@@ -306,7 +306,7 @@ function ensureAuth(req, res, next) {
 }
 
 // Ruta para home (después del login exitoso) con búsqueda
-app.get(['/home', '/index.html'], async (req, res) => {
+app.get(['/home', '/index.html'], ensureAuth, async (req, res) => {
   try {
     const searchQuery = (req.query.q || '').trim().toLowerCase();
     
@@ -419,7 +419,7 @@ app.post('/registro', async (req, res) => {
 });
 
 // Ruta para mostrar el catálogo con productos de Firebase
-app.get(['/catalogo', '/catalogo.html'], async (req, res) => {
+app.get(['/catalogo', '/catalogo.html'], ensureAuth, async (req, res) => {
   try {
     const searchQuery = (req.query.q || '').trim().toLowerCase();
     debugLog('=== CARGANDO CATÁLOGO ===');
@@ -459,7 +459,7 @@ app.get(['/catalogo', '/catalogo.html'], async (req, res) => {
 });
 
 // Endpoint de búsqueda para sugerencias en vivo (JSON)
-app.get('/buscar', async (req, res) => {
+app.get('/buscar', ensureAuth, async (req, res) => {
   try {
     const q = (req.query.q || '').trim().toLowerCase();
     if (!q) return res.json({ results: [] });
@@ -483,7 +483,7 @@ app.get('/buscar', async (req, res) => {
 });
 
 // Ruta para mostrar detalles de un producto específico
-app.get(['/detalles/:id', '/detalles'], async (req, res) => {
+app.get(['/detalles/:id', '/detalles'], ensureAuth, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -682,10 +682,10 @@ app.post('/eliminar/:id', ensureAuth, async (req, res) => {
     return res.status(500).render('modificar', { game: null, errors: ['Error al eliminar producto'], success: null, searched: false });
   }
 });
-app.get(['/juego_horizon', '/juego_horizon.html', '/juego/horizon'], (req, res) => res.render('juego_horizon'));
-app.get(['/juego_forest', '/juego_forest.html', '/juego/forest'], (req, res) => res.render('juego_forest'));
-app.get(['/juego_ghost', '/juego_ghost.html', '/juego/ghost'], (req, res) => res.render('juego_ghost'));
-app.get(['/juego_residentevil', '/juego_residentevil.html', '/juego/residentevil'], (req, res) => res.render('juego_residentevil'));
+app.get(['/juego_horizon', '/juego_horizon.html', '/juego/horizon'], ensureAuth, (req, res) => res.render('juego_horizon'));
+app.get(['/juego_forest', '/juego_forest.html', '/juego/forest'], ensureAuth, (req, res) => res.render('juego_forest'));
+app.get(['/juego_ghost', '/juego_ghost.html', '/juego/ghost'], ensureAuth, (req, res) => res.render('juego_ghost'));
+app.get(['/juego_residentevil', '/juego_residentevil.html', '/juego/residentevil'], ensureAuth, (req, res) => res.render('juego_residentevil'));
 
 // Simple redirect patterns: si en las vistas hay enlaces relativos como juego_horizon.html
 // también contemplamos /juego_horizon.html mediante las rutas anteriores.
